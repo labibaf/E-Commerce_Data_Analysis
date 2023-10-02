@@ -27,7 +27,7 @@ def create_sum_payment_type_df(df):
     sum_payment_type_df=df.groupby(by='payment_type').order_id.nunique().sort_values(ascending=False).reset_index()
     return sum_payment_type_df
 
-final_df=pd.read_csv('./Dataset/E-Commerce_Dataset/final_dataset.csv')
+final_df=pd.read_csv('./dashboard/final_dataset.csv')
 
 final_df.sort_values(by='order_date',inplace=True)
 final_df.reset_index(inplace=True)
