@@ -1,4 +1,4 @@
-# Air Quality Dashboard 🔥
+# Public E-Commerce Data Analysis🔥
 
 ## Setup environment
 ```
