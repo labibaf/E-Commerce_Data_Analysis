@@ -2,12 +2,15 @@
 
 ## Setup environment
 ```
-python -m venv env
-env\Scripts\activate
-pip install numpy pandas scipy matplotlib seaborn jupyter streamlit babel
+pipenv install
+pipenv shell
+pip install numpy pandas scipy matplotlib seaborn jupyter streamlit
 ```
 
-## Run steamlit app
+## Run streamlit app
 ```
 streamlit run dashboard.py
 ```
+
+## Run streamlit cloud
+''' https://e-commercedataanalysis-labib.streamlit.app/ '''
