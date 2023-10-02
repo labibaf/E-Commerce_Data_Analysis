@@ -60,7 +60,7 @@ with col1:
     total_orders=daily_order_df.order_count.sum()
     st.metric('Total Order = ',total_orders)
 with col2:
-    total_revenue=format_currency(daily_order_df.revenue.sum(),'$')
+    total_revenue=format_currency(daily_order_df.revenue.sum(),'$',locale='en_US')
     st.metric('Total Revenue = ',total_revenue)
 
 fig, ax=plt.subplots(figsize=(16,8))
