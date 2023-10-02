@@ -4,12 +4,12 @@
 ```
 pipenv install
 pipenv shell
-pip install numpy pandas scipy matplotlib seaborn jupyter streamlit
+pip install -r requirements.txt
 ```
 
 ## Run streamlit app
 ```
-streamlit run dashboard.py
+streamlit run dashboard/dashboard.py
 ```
 
 ## Run streamlit cloud
