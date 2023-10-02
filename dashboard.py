@@ -1,6 +1,4 @@
 import pandas as pd
-import matplotlib as mpl
-mpl.use('TkAgg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
