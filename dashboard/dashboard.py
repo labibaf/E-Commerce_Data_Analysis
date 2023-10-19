@@ -1,10 +1,10 @@
 import pandas as pd
 import seaborn as sns
 import streamlit as st
-import numpy as np
-import matplotlib.pyplot as plt
+import plotly.express as px
 from babel.numbers import format_currency
 sns.set_style('dark')
+st.set_page_config(layout="wide")
 
 def create_daily_order_df(df):
     daily_order_df=df.resample(rule='D',on='order_date').agg({
@@ -63,66 +63,61 @@ with col2:
     total_revenue=format_currency(daily_order_df.revenue.sum(),'$',locale='en_US')
     st.metric('Total Revenue = ',total_revenue)
 
-fig, ax=plt.subplots(figsize=(16,8))
-ax.plot(
-    daily_order_df['order_date'],
-    daily_order_df['order_count'],
-    marker='o',
-    linewidth=2,
-    color='#90CAF9'
-)
-ax.tick_params(axis='y',labelsize=20)
-ax.tick_params(axis='x',labelsize=15)
+col1,col2=st.columns(2)
+with col1:
+    fig = px.line(daily_order_df, x='order_date', y='order_count', markers=True, line_shape='linear')
+    fig.update_traces(marker=dict(size=5, color='#90CAF9', symbol='circle'), line=dict(width=2))
 
-st.pyplot(fig)
+    fig.update_xaxes(tickfont=dict(size=15))
+    fig.update_yaxes(tickfont=dict(size=20))
+
+    fig.update_layout(
+        title='Grafik Order Harian',
+        xaxis_title='Tanggal Pesanan',
+        yaxis_title='Jumlah Pesanan',
+        autosize=True,
+    )
+    st.plotly_chart(fig)
+with col2:
+    fig = px.pie(
+        sum_payment_type_df,
+        values='order_id',
+        names='payment_type',
+        title='Payment Types Distribution'
+    )
+
+    st.plotly_chart(fig)
+
 
 st.subheader('Highest and Lowest Sales')
-fig, ax =plt.subplots(nrows=1,ncols=2,figsize=(20,5))
-colors = sns.color_palette("viridis", len(sum_order_items_df.head(5)))
+col1, col2 = st.columns(2)
 
-sns.barplot(x='order_id',y='product_category_name',data=sum_order_items_df.head(5),ax=ax[0], palette=colors)
-ax[0].set_title('Top 5 Product Category Highest Sales',fontsize=14)
-ax[0].set_ylabel(None)
-ax[0].set_xlabel(None)
-ax[0].tick_params(axis='y', labelsize=12)
+with col1:
+    fig_top = px.bar(sum_order_items_df.head(5), x='order_id', y='product_category_name', color='product_category_name', title='Top 5 Product Category Highest Sales')
+    st.plotly_chart(fig_top)
 
-sns.barplot(x='order_id',y='product_category_name',data=sum_order_items_df.sort_values(by='order_id', ascending=True).head(5),ax=ax[1], palette=colors)
-ax[1].set_title('Bottom 5 Product Category Lowest Sales',fontsize=14)
-ax[1].set_ylabel(None)
-ax[1].set_xlabel(None)
-ax[1].tick_params(axis='y', labelsize=12)
-plt.subplots_adjust(wspace=0.3)  
-st.pyplot(fig)
+with col2:
+    fig_bottom = px.bar(sum_order_items_df.sort_values(by='order_id', ascending=True).head(5), x='order_id', y='product_category_name', color='product_category_name', title='Bottom 5 Product Category Lowest Sales')
+    st.plotly_chart(fig_bottom)
 
 st.subheader('Highest and Lowest Review Score')
-fig, ax =plt.subplots(nrows=1,ncols=2,figsize=(20,5))
-colors = sns.color_palette("viridis", len(mean_review_score_df.head(5)))
+col1, col2 = st.columns(2)
+with col1:
+    fig = px.bar(
+        mean_review_score_df.head(5),
+        x='review_score',
+        y='product_category_name',
+        color='product_category_name',
+        title='Top 5 Product Category by Review Score'
+    )
+    st.plotly_chart(fig)
+with col2:
+    fig_bottom = px.bar(
+        mean_review_score_df.sort_values(by='review_score', ascending=True).head(5),
+        x='review_score',
+        y='product_category_name',
+        color='product_category_name',
+        title='Bottom 5 Product Category by Review Score'
+    )
+    st.plotly_chart(fig_bottom)
 
-sns.barplot(x='review_score',y='product_category_name',data=mean_review_score_df.head(5),ax=ax[0], palette=colors)
-ax[0].set_title('Top 5 Product Category by Review Score',fontsize=14)
-ax[0].set_ylabel(None)
-ax[0].set_xlabel(None)
-ax[0].tick_params(axis='y', labelsize=12)
-
-sns.barplot(x='review_score',y='product_category_name',data=mean_review_score_df.sort_values(by='review_score', ascending=True).head(5),ax=ax[1], palette=colors)
-ax[1].set_title('Bottom 5 Product Category by Review Score',fontsize=14)
-ax[1].set_ylabel(None)
-ax[1].set_xlabel(None)
-ax[1].tick_params(axis='y', labelsize=12)
-plt.subplots_adjust(wspace=0.7)
-st.pyplot(fig)
-
-st.subheader('Distribution of Payment Methods')
-colors = sns.color_palette("Set3", 4)
-fig, ax = plt.subplots(figsize=(8, 6))
-ax.pie(
-    x=sum_payment_type_df['order_id'],
-    autopct='%.0f%%',
-    pctdistance=0.85,
-    colors=colors,
-    explode=(0.1, 0, 0, 0),
-    shadow=True,
-    startangle=90
-)
-ax.legend(sum_payment_type_df['payment_type'], loc='upper right', bbox_to_anchor=(1.2, 1))
-st.pyplot(fig)
